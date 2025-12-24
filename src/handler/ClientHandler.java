@@ -1,10 +1,10 @@
-package ClientHandler;
+package handler;
 
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable {
     public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
 
     private Socket socket;
@@ -13,7 +13,7 @@ class ClientHandler implements Runnable {
 
     private String username;
 
-    ClientHandler(Socket socket) {
+    public ClientHandler(Socket socket) {
         try {
             this.socket = socket;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -22,8 +22,10 @@ class ClientHandler implements Runnable {
             this.username = bufferedReader.readLine();
             clientHandlers.add(this);
             // broadcastmessage
+            broadcastMessage("\n" + username + " has joined the chat\n");
         } catch (IOException e) {
             // close all opened stuff
+            closeEverything(socket, bufferedReader, bufferedWriter);
         }
 
     }
@@ -32,12 +34,12 @@ class ClientHandler implements Runnable {
     public void run() {
         String messageFromClient;
 
-        while (socket.isConnected()) {
-            try {
-                messageFromClient = bufferedReader.readLine();
-            } catch (IOException e) {
-                closeEverything(socket, bufferedReader, bufferedWriter);
+        try {
+            while ((messageFromClient = bufferedReader.readLine()) != null) {
+                broadcastMessage(messageFromClient);
             }
+        } catch (IOException e) {
+            closeEverything(socket, bufferedReader, bufferedWriter);
         }
     }
 
