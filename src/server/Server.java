@@ -1,7 +1,8 @@
-package Server;
+package server;
 
 import java.io.*;
 import java.net.*;
+import handler.ClientHandler;
 
 class Server {
     private ServerSocket serverSocket;
@@ -14,10 +15,13 @@ class Server {
     public void runServer() {
         try {
             while (!serverSocket.isClosed()) {
-                serverSocket.accept();
+                Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
 
                 // client handling
+                ClientHandler clientHandler = new ClientHandler(socket);
+                Thread thread = new Thread(clientHandler);
+                thread.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,7 +43,7 @@ class Server {
             ServerSocket serverSocket = new ServerSocket(5000);
             Server server = new Server(serverSocket);
             server.runServer();
-        } catch (IOException io) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
