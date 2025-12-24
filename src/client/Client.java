@@ -1,4 +1,4 @@
-package Client;
+package client;
 
 import java.io.*;
 import java.net.*;
@@ -25,21 +25,21 @@ class Client {
     }
 
     public void sendMessage() {
-       try {
-            bufferedWriter.write(username);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
-            
-            Scanner scanner = new Scanner(System.in);
-            while (socket.isConnected()) {
-                String message = scanner.nextLine();
-                bufferedWriter.write(username + ": " + message);
+        try {
+                bufferedWriter.write(username);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
-            }
-       } catch (IOException e) {
+
+                Scanner scanner = new Scanner(System.in);
+                while (socket.isConnected()) {  // Change this line
+                    String message = scanner.nextLine();
+                    bufferedWriter.write(username + ": " + message);
+                    bufferedWriter.newLine();
+                    bufferedWriter.flush();
+                }
+    } catch (IOException e) {
             e.printStackTrace();
-       }
+    }
     }
 
     public void listen() {
@@ -48,8 +48,8 @@ class Client {
             public void run() {
                 try {
                     String msgFromServer;
-                    while (socket.isConnected()) {
-                        System.out.println(bufferedReader.readLine());
+                    while ((msgFromServer = bufferedReader.readLine()) != null) {  // Store in variable
+                        System.out.println(msgFromServer);  // Print the variable
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
