@@ -31,7 +31,7 @@ class Client {
                 bufferedWriter.flush();
 
                 Scanner scanner = new Scanner(System.in);
-                while (socket.isConnected()) {  // Change this line
+                while (socket.isConnected()) {  
                     String message = scanner.nextLine();
                     bufferedWriter.write(username + ": " + message);
                     bufferedWriter.newLine();
